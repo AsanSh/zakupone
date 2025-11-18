@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сборка заявки — ZAKUP.ONE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        header {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 111, 237, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2F6FED;
+        }
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            color: #0f172a;
+        }
+        .logo-text p {
+            font-size: 14px;
+            color: #64748b;
+        }
+        nav {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #2F6FED;
+        }
+        .nav-link.active {
+            background: #f1f5f9;
+            color: #2F6FED;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-details {
+            text-align: right;
+        }
+        .user-details strong {
+            display: block;
+            font-size: 14px;
+        }
+        .user-details small {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .card-heading {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .cart-items {
+            margin-bottom: 24px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item-info {
+            flex: 1;
+        }
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .cart-item-details {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .quantity-btn:hover {
+            background: #f8fafc;
+            border-color: #2F6FED;
+        }
+        .quantity-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .cart-item-price {
+            font-weight: 600;
+            min-width: 120px;
+            text-align: right;
+        }
+        .cart-total {
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 16px;
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn-add {
+            padding: 6px 12px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-add:hover {
+            background: #dc2626;
+        }
+        .btn-primary {
+            padding: 8px 16px;
+            background: rgba(47, 111, 237, 0.1);
+            color: #2F6FED;
+            border: none;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover {
+            background: rgba(47, 111, 237, 0.2);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: #2F6FED;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: #2563eb;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .method-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .method-card:hover {
+            transform: translateY(-4px);
+            border-color: #2F6FED;
+            box-shadow: 0 4px 12px rgba(47, 111, 237, 0.2);
+        }
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            color: #2F6FED;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+        .method-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .method-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">Z</div>
+                    <div class="logo-text">
+                        <h1>ZAKUP.ONE</h1>
+                        <p>Платформа снабжения строительных компаний</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="index.html" class="nav-link">Товары</a>
+                    <a href="order.html" class="nav-link active">Сборка заявки</a>
+                    <a href="orders.html" class="nav-link">Мои заявки</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-details">
+                        <strong>admin@zakup.one</strong>
+                        <small>Администратор</small>
+                    </div>
+                    <button onclick="logout()" style="width: 44px; height: 44px; border-radius: 16px; background: #f1f5f9; border: none; cursor: pointer;">🚪</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Сборка заявки</div>
+                    <h2 class="card-heading">Корзина (<span id="cartCount">0</span> товаров)</h2>
+                </div>
+            </div>
+            
+            <div id="cartContainer">
+                <!-- Корзина будет заполнена через JS -->
+            </div>
+            
+            <div id="emptyCart" class="empty-cart" style="display: none;">
+                <h3 style="margin-bottom: 16px;">Корзина пуста</h3>
+                <p style="margin-bottom: 24px;">Добавьте товары из каталога</p>
+                <button class="btn-primary" onclick="window.location.href='index.html'">Перейти к товарам</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Детали заявки</div>
+                    <h2 class="card-heading">Оформление</h2>
+                </div>
+            </div>
+            
+            <form id="orderForm" onsubmit="submitOrder(event)">
+                <div class="form-group">
+                    <label class="form-label">Название заявки</label>
+                    <input type="text" class="form-input" name="title" required placeholder="Например: Закупка материалов для объекта №5">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Комментарий</label>
+                    <textarea class="form-textarea" name="comment" placeholder="Дополнительная информация для поставщиков"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Срок поставки</label>
+                    <input type="date" class="form-input" name="deadline" required>
+                </div>
+                
+                <button type="submit" class="btn-submit">Отправить заявку поставщикам</button>
+            </form>
+        </div>
+
+        <footer>
+            © 2029 Zakup.one — снабжение без хаоса.
+        </footer>
+    </div>
+    
+    <script src="js/app.js"></script>
+    <script>
+        function renderCart() {
+            const cart = cartManager.cart;
+            const container = document.getElementById('cartContainer');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cart.length === 0) {
+                container.style.display = 'none';
+                emptyCart.style.display = 'block';
+                document.getElementById('cartCount').textContent = '0';
+                return;
+            }
+            
+            container.style.display = 'block';
+            emptyCart.style.display = 'none';
+            
+            let html = '<div class="cart-items">';
+            cart.forEach(item => {
+                const total = item.price * item.quantity;
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-details">${item.supplier} • ${item.unit}</div>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" 
+                                   onchange="updateQuantity(${item.id}, parseInt(this.value))" min="1">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                        </div>
+                        <div class="cart-item-price">${formatPrice(total)}</div>
+                        <button class="btn-add" onclick="removeFromCart(${item.id})">Удалить</button>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="cart-total">
+                    <div>
+                        <strong>Итого:</strong>
+                        <div style="font-size: 24px; color: #2F6FED; margin-top: 4px;">${formatPrice(cartManager.getTotal())}</div>
+                    </div>
+                    <button class="btn-primary" onclick="clearCart()">Очистить корзину</button>
+                </div>
+            `;
+            
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById('cartCount').textContent = cartManager.getCount();
+        }
+        
+        function updateQuantity(productId, quantity) {
+            cartManager.updateQuantity(productId, quantity);
+            renderCart();
+        }
+        
+        function removeFromCart(productId) {
+            cartManager.remove(productId);
+            renderCart();
+            showNotification('Товар удален из корзины');
+        }
+        
+        function clearCart() {
+            if (confirm('Очистить всю корзину?')) {
+                cartManager.clear();
+                renderCart();
+                showNotification('Корзина очищена');
+            }
+        }
+        
+        function submitOrder(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const order = {
+                id: Date.now(),
+                title: formData.get('title'),
+                comment: formData.get('comment'),
+                deadline: formData.get('deadline'),
+                items: cartManager.cart,
+                total: cartManager.getTotal(),
+                status: 'Новая',
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            // Сохранение заявки
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.unshift(order);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            // Очистка корзины
+            cartManager.clear();
+            
+            showNotification('Заявка успешно создана!', 'success');
+            setTimeout(() => {
+                window.location.href = 'orders.html';
+            }, 1500);
+        }
+        
+        function downloadTemplate() {
+            const template = 'Название товара,Количество,Единица измерения\nАрматура A12,10,м\n';
+            const blob = new Blob(['\ufeff' + template], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'zakupone-template.csv';
+            link.click();
+        }
+        
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('cart');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        window.updateCartUI = renderCart;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage();
+            renderCart();
+            
+            // Установка минимальной даты на завтра
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const deadlineInput = document.querySelector('input[name="deadline"]');
+            if (deadlineInput) {
+                deadlineInput.min = tomorrow.toISOString().split('T')[0];
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -14,7 +14,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
             background: #f1f5f9;
             color: #0f172a;
-            line-height: 1.6;
+            line-height: 1.5;
         }
         .container {
             max-width: 1280px;
@@ -128,6 +128,36 @@
         .search-input input::placeholder {
             color: #94a3b8;
         }
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-top: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+        }
+        .search-results.active {
+            display: block;
+        }
+        .search-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .search-result-item:hover {
+            background: #f8fafc;
+        }
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
         .stats {
             display: flex;
             gap: 8px;
@@ -188,22 +218,22 @@
         .product-section {
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             overflow: hidden;
         }
         .product-section-header {
             background: #f8fafc;
-            padding: 12px 16px;
+            padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .product-section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
         }
         .product-section-sub {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #94a3b8;
@@ -212,33 +242,40 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 16px;
+            padding: 8px 16px;
             border-top: 1px solid #f1f5f9;
             flex-wrap: wrap;
+            min-height: 48px;
+        }
+        .product-item.hidden {
+            display: none;
         }
         .product-name {
             flex: 1;
             font-weight: 500;
             color: #0f172a;
+            font-size: 14px;
         }
         .product-unit, .product-country {
-            width: 64px;
+            width: 48px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             color: #94a3b8;
         }
         .product-price {
             font-weight: 600;
             color: #0f172a;
+            font-size: 14px;
+            min-width: 80px;
         }
         .btn-add {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: #2F6FED;
             color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 12px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -281,6 +318,7 @@
             height: 40px;
             color: #2F6FED;
             margin-bottom: 16px;
+            font-size: 24px;
         }
         .method-title {
             font-size: 18px;
@@ -312,6 +350,11 @@
             color: #94a3b8;
             font-size: 12px;
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -326,32 +369,28 @@
                     </div>
                 </div>
                 <nav>
-                    <a href="#" class="nav-link active">Товары</a>
-                    <a href="#" class="nav-link">Сборка заявки</a>
-                    <a href="#" class="nav-link">Мои заявки</a>
-                    <a href="#" class="nav-link">Поставщики</a>
+                    <a href="index.html" class="nav-link active">Товары</a>
+                    <a href="order.html" class="nav-link">Сборка заявки</a>
+                    <a href="orders.html" class="nav-link">Мои заявки</a>
                 </nav>
                 <div class="user-info">
                     <div class="user-details">
                         <strong>admin@zakup.one</strong>
                         <small>Администратор</small>
                     </div>
-                    <button style="width: 44px; height: 44px; border-radius: 16px; background: #f1f5f9; border: none; cursor: pointer;">🚪</button>
+                    <button onclick="logout()" style="width: 44px; height: 44px; border-radius: 16px; background: #f1f5f9; border: none; cursor: pointer;">🚪</button>
                 </div>
             </div>
             <div class="search-bar">
-                <div class="search-input">
+                <div class="search-input" style="position: relative;">
                     <span>🔍</span>
-                    <input type="text" placeholder="Начните вводить название товара...">
+                    <input type="text" id="searchInput" placeholder="Начните вводить название товара..." oninput="handleSearch(this.value)">
+                    <div class="search-results" id="searchResults"></div>
                 </div>
                 <div class="stats">
                     <div class="stat-card">
-                        <div class="stat-value">69</div>
+                        <div class="stat-value" id="totalProducts">69</div>
                         <div class="stat-label">Товары</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">14</div>
-                        <div class="stat-label">Поставщики</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value">5</div>
@@ -367,71 +406,22 @@
                     <div class="card-header">
                         <div>
                             <div class="card-title">Каталог</div>
-                            <h2 class="card-heading">Товары (69)</h2>
+                            <h2 class="card-heading">Товары (<span id="visibleProducts">69</span>)</h2>
                         </div>
-                        <button class="btn-primary">Экспорт XLSX</button>
+                        <button class="btn-primary" onclick="exportToExcel()">Экспорт XLSX</button>
                     </div>
-                    <div class="product-section">
-                        <div class="product-section-header">
-                            <div>
-                                <div class="product-section-title">Арматура</div>
-                                <div class="product-section-sub">8 товаров</div>
-                            </div>
-                            <span>📦</span>
-                        </div>
-                        <div class="product-item">
-                            <div class="product-name">Арматура A12</div>
-                            <div class="product-unit">м</div>
-                            <div class="product-country">РФ</div>
-                            <div class="product-price">85 сом</div>
-                            <button class="btn-add">Добавить</button>
-                        </div>
-                        <div class="product-item">
-                            <div class="product-name">Арматура A14</div>
-                            <div class="product-unit">м</div>
-                            <div class="product-country">Китай</div>
-                            <div class="product-price">120 сом</div>
-                            <button class="btn-add">Добавить</button>
-                        </div>
-                        <div class="product-item">
-                            <div class="product-name">Арматура A16</div>
-                            <div class="product-unit">м</div>
-                            <div class="product-country">РФ</div>
-                            <div class="product-price">150 сом</div>
-                            <button class="btn-add">Добавить</button>
-                        </div>
-                    </div>
-                    <div class="product-section">
-                        <div class="product-section-header">
-                            <div>
-                                <div class="product-section-title">Инструменты</div>
-                                <div class="product-section-sub">4 товара</div>
-                            </div>
-                            <span>📦</span>
-                        </div>
-                        <div class="product-item">
-                            <div class="product-name">Перфоратор</div>
-                            <div class="product-unit">шт</div>
-                            <div class="product-country">РФ</div>
-                            <div class="product-price">8 500 сом</div>
-                            <button class="btn-add">Добавить</button>
-                        </div>
-                        <div class="product-item">
-                            <div class="product-name">Дрель</div>
-                            <div class="product-unit">шт</div>
-                            <div class="product-country">КР</div>
-                            <div class="product-price">3 500 сом</div>
-                            <button class="btn-add">Добавить</button>
-                        </div>
+                    <div id="productsContainer">
+                        <!-- Товары будут сгенерированы динамически через JS -->
                     </div>
                 </div>
             </div>
+
             <div>
                 <div class="sidebar-card gradient-card">
                     <div class="card-title" style="color: #2F6FED;">Быстрая заявка</div>
                     <h3 class="card-heading">Сборка заявки за 3 шага</h3>
                     <p style="color: #64748b; margin-top: 8px; margin-bottom: 24px;">Добавляйте позиции, фиксируйте требования и отправляйте в работу снабженцу.</p>
-                    <button class="btn-primary" style="width: 100%; background: rgba(255,255,255,0.1);">Перейти в конструктор</button>
+                    <button class="btn-primary" style="width: 100%; background: rgba(255,255,255,0.1);" onclick="window.location.href='order.html'">Перейти в конструктор</button>
                 </div>
                 <div class="sidebar-card">
                     <div class="card-header">
@@ -439,7 +429,7 @@
                             <div class="card-title">Мои заявки</div>
                             <h3 class="card-heading">Последние статусы</h3>
                         </div>
-                        <a href="#" style="font-size: 14px; font-weight: 600; color: #2F6FED; text-decoration: none;">Смотреть все</a>
+                        <a href="orders.html" style="font-size: 14px; font-weight: 600; color: #2F6FED; text-decoration: none;">Смотреть все</a>
                     </div>
                     <div style="margin-top: 16px;">
                         <div style="background: #f8fafc; padding: 12px 16px; border-radius: 16px; margin-bottom: 12px;">
@@ -448,47 +438,208 @@
                         </div>
                         <div style="background: #f8fafc; padding: 12px 16px; border-radius: 16px;">
                             <div style="font-weight: 600; margin-bottom: 4px;">Заявка #452 — отделочные материалы</div>
-                            <div style="font-size: 12px; color: #94a3b8;">Отправлена поставщикам</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Отправлена</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <div class="card-title">Сборка заявки</div>
-                    <h2 class="card-heading">Способы создания заявки</h2>
-                </div>
-            </div>
-            <div class="methods-grid">
-                <div class="method-card">
-                    <div class="method-icon">📤</div>
-                    <h3 class="method-title">Загрузить номенклатуру</h3>
-                    <p class="method-desc">Прикрепите XLSX с товарами и количеством. Мы распознаем позиции и сформируем корзину.</p>
-                    <button class="btn-primary">Выбрать файл</button>
-                    <div style="margin-top: 8px;"><a href="#" style="font-size: 14px; color: #64748b; text-decoration: underline;">Скачать шаблон</a></div>
-                </div>
-                <div class="method-card">
-                    <div class="method-icon">📝</div>
-                    <h3 class="method-title">Создать заявку вручную</h3>
-                    <p class="method-desc">Введите номенклатуру строкой или блоком текста.</p>
-                    <button class="btn-primary">Ввести текст</button>
-                </div>
-                <div class="method-card">
-                    <div class="method-icon">📷</div>
-                    <h3 class="method-title">Сфотографировать текст</h3>
-                    <p class="method-desc">Загрузите фото накладной или прайса. Включен OCR.</p>
-                    <button class="btn-primary">Сфотографировать</button>
-                </div>
-            </div>
-        </div>
-
         <footer>
-            © 2025 Zakup.one — снабжение без хаоса.
+            © 2029 Zakup.one — снабжение без хаоса.
         </footer>
     </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Инициализация страницы товаров
+        let currentFilters = {};
+        
+        function handleSearch(query) {
+            const searchResults = document.getElementById('searchResults');
+            const results = searchEngine.search(query, currentFilters);
+            
+            if (query.length < 2) {
+                searchResults.classList.remove('active');
+                filterProducts('');
+                return;
+            }
+            
+            // Показ результатов поиска
+            if (results.length > 0) {
+                searchResults.innerHTML = results.slice(0, 10).map(p => `
+                    <div class="search-result-item" onclick="selectProduct(${p.id})">
+                        <strong>${p.name}</strong> - ${formatPrice(p.price)} (${p.unit})<br>
+                        <small style="color: #94a3b8;">${p.category}</small>
+                    </div>
+                `).join('');
+                searchResults.classList.add('active');
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item">Товары не найдены</div>';
+                searchResults.classList.add('active');
+            }
+            
+            filterProducts(query);
+        }
+        
+        function selectProduct(productId) {
+            const product = AppData.products.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('searchInput').value = product.name;
+                document.getElementById('searchResults').classList.remove('active');
+                filterProducts(product.name);
+                const item = document.querySelector(`[data-product-id="${productId}"]`);
+                if (item) {
+                    item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    item.style.background = '#fef3c7';
+                    setTimeout(() => item.style.background = '', 2000);
+                }
+            }
+        }
+        
+        function filterProducts(query) {
+            const results = searchEngine.search(query, currentFilters);
+            const items = document.querySelectorAll('.product-item');
+            let visibleCount = 0;
+            
+            // Обновление видимости
+            items.forEach(item => {
+                const productId = parseInt(item.getAttribute('data-product-id'));
+                const product = results.find(p => p.id === productId);
+                if (product) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            // Скрытие пустых секций
+            document.querySelectorAll('.product-section').forEach(section => {
+                const sectionItems = section.querySelectorAll('.product-item:not(.hidden)');
+                if (sectionItems.length === 0) {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = 'block';
+                }
+            });
+            
+            document.getElementById('visibleProducts').textContent = visibleCount;
+        }
+        
+        function addToCart(productId) {
+            const product = AppData.products.find(p => p.id === productId);
+            if (product) {
+                cartManager.add(product, 1);
+                showNotification(`Товар "${product.name}" добавлен в корзину`);
+            }
+        }
+        
+        function exportToExcel() {
+            exportDataToCSV(AppData.products.map(p => ({
+                Название: p.name,
+                Категория: p.category,
+                Единица: p.unit,
+                Страна: p.country,
+                Цена: p.price
+            })), 'zakupone-products.csv');
+        }
+        
+        function downloadTemplate() {
+            const template = 'Название товара,Количество,Единица измерения\nАрматура A12,10,м\n';
+            const blob = new Blob(['\ufeff' + template], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'zakupone-template.csv';
+            link.click();
+        }
+        
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('cart');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            if (!container) {
+                console.error('Контейнер productsContainer не найден!');
+                return;
+            }
+            
+            if (!AppData || !AppData.products || AppData.products.length === 0) {
+                console.error('AppData.products пуст или не определен!');
+                container.innerHTML = '<div class="empty-state"><p>Товары не найдены</p></div>';
+                return;
+            }
+            
+            const grouped = {};
+            
+            AppData.products.forEach(product => {
+                if (!grouped[product.category]) {
+                    grouped[product.category] = [];
+                }
+                grouped[product.category].push(product);
+            });
+            
+            let html = '';
+            Object.keys(grouped).forEach(category => {
+                const products = grouped[category];
+                html += `
+                    <div class="product-section" data-category="${category}">
+                        <div class="product-section-header">
+                            <div>
+                                <div class="product-section-title">${category}</div>
+                                <div class="product-section-sub">${products.length} товаров</div>
+                            </div>
+                            <span>📦</span>
+                        </div>
+                `;
+                
+                products.forEach(product => {
+                    html += `
+                        <div class="product-item" data-name="${product.name}" data-category="${product.category}" data-product-id="${product.id}">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-unit">${product.unit}</div>
+                            <div class="product-country">${product.country}</div>
+                            <div class="product-price">${formatPrice(product.price)}</div>
+                            <button class="btn-add" onclick="addToCart(${product.id})">Добавить</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+            console.log(`Отображено ${AppData.products.length} товаров в ${Object.keys(grouped).length} категориях`);
+        }
+        
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = AppData.products.length;
+            document.getElementById('visibleProducts').textContent = AppData.products.length;
+        }
+        
+        // Обновление товаров в DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            // Проверяем что AppData загружена
+            if (typeof AppData === 'undefined' || !AppData.products) {
+                console.error('AppData не загружена! Проверьте подключение js/app.js');
+                document.getElementById('productsContainer').innerHTML = '<div class="empty-state"><p>Ошибка загрузки данных. Проверьте консоль браузера.</p></div>';
+                return;
+            }
+            initPage();
+            renderProducts();
+            updateStats();
+        });
+        
+        // Закрытие результатов поиска при клике вне
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-input')) {
+                document.getElementById('searchResults').classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
-

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поставщики — ZAKUP.ONE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        header {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 111, 237, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2F6FED;
+        }
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            color: #0f172a;
+        }
+        .logo-text p {
+            font-size: 14px;
+            color: #64748b;
+        }
+        nav {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #2F6FED;
+        }
+        .nav-link.active {
+            background: #f1f5f9;
+            color: #2F6FED;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-details {
+            text-align: right;
+        }
+        .user-details strong {
+            display: block;
+            font-size: 14px;
+        }
+        .user-details small {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .card-heading {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+        }
+        .search-input input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-input input::placeholder {
+            color: #94a3b8;
+        }
+        .suppliers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .supplier-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .supplier-card:hover {
+            border-color: #2F6FED;
+            box-shadow: 0 4px 12px rgba(47, 111, 237, 0.1);
+            transform: translateY(-2px);
+        }
+        .supplier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        .supplier-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .supplier-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #f59e0b;
+            font-size: 14px;
+        }
+        .supplier-contact {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .supplier-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2F6FED;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">Z</div>
+                    <div class="logo-text">
+                        <h1>ZAKUP.ONE</h1>
+                        <p>Платформа снабжения строительных компаний</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="index.html" class="nav-link">Товары</a>
+                    <a href="order.html" class="nav-link">Сборка заявки</a>
+                    <a href="orders.html" class="nav-link">Мои заявки</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-details">
+                        <strong>admin@zakup.one</strong>
+                        <small>Администратор</small>
+                    </div>
+                    <button onclick="logout()" style="width: 44px; height: 44px; border-radius: 16px; background: #f1f5f9; border: none; cursor: pointer;">🚪</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Каталог</div>
+                    <h2 class="card-heading">Поставщики (<span id="suppliersCount">0</span>)</h2>
+                </div>
+                <div class="search-input">
+                    <span>🔍</span>
+                    <input type="text" id="supplierSearch" 
+                           placeholder="Поиск поставщиков..." 
+                           oninput="searchSuppliers(this.value)">
+                </div>
+            </div>
+            
+            <div id="suppliersContainer" class="suppliers-grid">
+                <!-- Поставщики будут заполнены через JS -->
+            </div>
+        </div>
+
+        <footer>
+            © 2029 Zakup.one — снабжение без хаоса.
+        </footer>
+    </div>
+    
+    <script src="js/app.js"></script>
+    <script>
+        function renderSuppliers(suppliers = null) {
+            const suppliersToRender = suppliers || AppData.suppliers;
+            const container = document.getElementById('suppliersContainer');
+            document.getElementById('suppliersCount').textContent = suppliersToRender.length;
+            
+            if (suppliersToRender.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>Поставщики не найдены</h3></div>';
+                return;
+            }
+            
+            container.innerHTML = suppliersToRender.map(supplier => {
+                const stars = '★'.repeat(Math.floor(supplier.rating));
+                return `
+                    <div class="supplier-card">
+                        <div class="supplier-header">
+                            <div>
+                                <div class="supplier-name">${supplier.name}</div>
+                                <div class="supplier-rating">
+                                    ${stars} ${supplier.rating}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="supplier-contact">
+                            <div class="contact-item">
+                                <span>📧</span>
+                                <span>${supplier.email}</span>
+                            </div>
+                            <div class="contact-item">
+                                <span>📞</span>
+                                <span>${supplier.phone}</span>
+                            </div>
+                        </div>
+                        <div class="supplier-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${supplier.products}</div>
+                                <div class="stat-label">Товаров</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function searchSuppliers(query) {
+            const results = searchEngine.searchSuppliers(query);
+            renderSuppliers(results);
+        }
+        
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                localStorage.removeItem('cart');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initPage();
+            renderSuppliers();
+        });
+    </script>
+</body>
+</html>
+
