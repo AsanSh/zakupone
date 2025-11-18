@@ -1,0 +1,87 @@
+#!/bin/bash
+# Скрипт для создания файлов прямо на сервере через SSH
+# Использование: скопируйте команды из этого файла и выполните на сервере
+
+cat << 'EOF'
+# Подключитесь к серверу:
+ssh u188054@109.95.210.183
+
+# Перейдите в нужную директорию:
+cd www/zakup.one
+
+# Проверьте что вы там:
+pwd
+ls -la
+
+# Если директория пустая или файлов нет, создайте их:
+
+# Создайте index.html:
+cat > index.html << 'HTMLEND'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAKUP.ONE — платформа снабжения</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #0f172a; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 24px 16px; }
+        header { background: rgba(255,255,255,0.8); border-radius: 24px; padding: 24px; margin-bottom: 32px; }
+        .logo { display: flex; align-items: center; gap: 16px; }
+        .logo-icon { width: 48px; height: 48px; background: rgba(47, 111, 237, 0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 600; color: #2F6FED; }
+        h1 { font-size: 20px; font-weight: 600; letter-spacing: 0.2em; }
+        nav { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+        .nav-link { padding: 8px 16px; border-radius: 16px; font-size: 14px; font-weight: 600; color: #64748b; text-decoration: none; }
+        .nav-link.active { background: #f1f5f9; color: #2F6FED; }
+        .card { background: white; border-radius: 24px; padding: 24px; margin-bottom: 24px; }
+        footer { text-align: center; padding: 32px 0; color: #94a3b8; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">Z</div>
+                <div>
+                    <h1>ZAKUP.ONE</h1>
+                    <p>Платформа снабжения строительных компаний</p>
+                </div>
+            </div>
+            <nav>
+                <a href="#" class="nav-link active">Товары</a>
+                <a href="#" class="nav-link">Сборка заявки</a>
+                <a href="#" class="nav-link">Мои заявки</a>
+            </nav>
+        </header>
+        <div class="card">
+            <h2>Добро пожаловать на ZAKUP.ONE</h2>
+            <p>Сайт успешно загружен и работает!</p>
+        </div>
+        <footer>© 2025 Zakup.one — снабжение без хаоса.</footer>
+    </div>
+</body>
+</html>
+HTMLEND
+
+# Создайте .htaccess:
+cat > .htaccess << 'HTACCESSEND'
+DirectoryIndex index.html
+Options -Indexes +FollowSymLinks
+HTACCESSEND
+
+# Установите права:
+chmod 644 index.html
+chmod 644 .htaccess
+
+# Проверьте:
+ls -la
+
+# Перезагрузите Apache (если есть доступ):
+# systemctl restart apache2
+# или
+# service apache2 restart
+# или через панель управления HandyHost
+
+EOF
+
