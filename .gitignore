@@ -1,0 +1,27 @@
+# Node / Next
+node_modules/
+.next/
+out/
+.DS_Store
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.env
+venv/
+.env*
+*.sqlite3
+
+# Logs
+*.log
+
+# Editors
+.idea/
+.vscode/
+
+.venv/
+
+# Archives
+*.zip
+*.tar.gz
+*.tar

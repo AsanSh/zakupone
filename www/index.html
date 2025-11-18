@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZAKUP.ONE — платформа снабжения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        header {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(47, 111, 237, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2F6FED;
+        }
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            color: #0f172a;
+        }
+        .logo-text p {
+            font-size: 14px;
+            color: #64748b;
+        }
+        nav {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #2F6FED;
+        }
+        .nav-link.active {
+            background: #f1f5f9;
+            color: #2F6FED;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-details {
+            text-align: right;
+        }
+        .user-details strong {
+            display: block;
+            font-size: 14px;
+        }
+        .user-details small {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .search-bar {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+        }
+        .search-input input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-input input::placeholder {
+            color: #94a3b8;
+        }
+        .stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2F6FED;
+        }
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .card-heading {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .product-section {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .product-section-header {
+            background: #f8fafc;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .product-section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .product-section-sub {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+        }
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-top: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+        }
+        .product-name {
+            flex: 1;
+            font-weight: 500;
+            color: #0f172a;
+        }
+        .product-unit, .product-country {
+            width: 64px;
+            text-align: center;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #94a3b8;
+        }
+        .product-price {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .btn-add {
+            padding: 8px 16px;
+            background: #2F6FED;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-add:hover {
+            background: #2563eb;
+        }
+        .sidebar-card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .gradient-card {
+            background: linear-gradient(to bottom, rgba(47, 111, 237, 0.15), white);
+            border: 1px solid rgba(47, 111, 237, 0.2);
+        }
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        .method-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+        .method-card:hover {
+            transform: translateY(-4px);
+            border-color: #2F6FED;
+            box-shadow: 0 4px 12px rgba(47, 111, 237, 0.2);
+        }
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            color: #2F6FED;
+            margin-bottom: 16px;
+        }
+        .method-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .method-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        .btn-primary {
+            padding: 8px 16px;
+            background: rgba(47, 111, 237, 0.1);
+            color: #2F6FED;
+            border: none;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover {
+            background: rgba(47, 111, 237, 0.2);
+        }
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="logo">
+                    <div class="logo-icon">Z</div>
+                    <div class="logo-text">
+                        <h1>ZAKUP.ONE</h1>
+                        <p>Платформа снабжения строительных компаний</p>
+                    </div>
+                </div>
+                <nav>
+                    <a href="#" class="nav-link active">Товары</a>
+                    <a href="#" class="nav-link">Сборка заявки</a>
+                    <a href="#" class="nav-link">Мои заявки</a>
+                    <a href="#" class="nav-link">Поставщики</a>
+                </nav>
+                <div class="user-info">
+                    <div class="user-details">
+                        <strong>admin@zakup.one</strong>
+                        <small>Администратор</small>
+                    </div>
+                    <button style="width: 44px; height: 44px; border-radius: 16px; background: #f1f5f9; border: none; cursor: pointer;">🚪</button>
+                </div>
+            </div>
+            <div class="search-bar">
+                <div class="search-input">
+                    <span>🔍</span>
+                    <input type="text" placeholder="Начните вводить название товара...">
+                </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">69</div>
+                        <div class="stat-label">Товары</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">14</div>
+                        <div class="stat-label">Поставщики</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Заявки</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Каталог</div>
+                            <h2 class="card-heading">Товары (69)</h2>
+                        </div>
+                        <button class="btn-primary">Экспорт XLSX</button>
+                    </div>
+                    <div class="product-section">
+                        <div class="product-section-header">
+                            <div>
+                                <div class="product-section-title">Арматура</div>
+                                <div class="product-section-sub">8 товаров</div>
+                            </div>
+                            <span>📦</span>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-name">Арматура A12</div>
+                            <div class="product-unit">м</div>
+                            <div class="product-country">РФ</div>
+                            <div class="product-price">85 сом</div>
+                            <button class="btn-add">Добавить</button>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-name">Арматура A14</div>
+                            <div class="product-unit">м</div>
+                            <div class="product-country">Китай</div>
+                            <div class="product-price">120 сом</div>
+                            <button class="btn-add">Добавить</button>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-name">Арматура A16</div>
+                            <div class="product-unit">м</div>
+                            <div class="product-country">РФ</div>
+                            <div class="product-price">150 сом</div>
+                            <button class="btn-add">Добавить</button>
+                        </div>
+                    </div>
+                    <div class="product-section">
+                        <div class="product-section-header">
+                            <div>
+                                <div class="product-section-title">Инструменты</div>
+                                <div class="product-section-sub">4 товара</div>
+                            </div>
+                            <span>📦</span>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-name">Перфоратор</div>
+                            <div class="product-unit">шт</div>
+                            <div class="product-country">РФ</div>
+                            <div class="product-price">8 500 сом</div>
+                            <button class="btn-add">Добавить</button>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-name">Дрель</div>
+                            <div class="product-unit">шт</div>
+                            <div class="product-country">КР</div>
+                            <div class="product-price">3 500 сом</div>
+                            <button class="btn-add">Добавить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="sidebar-card gradient-card">
+                    <div class="card-title" style="color: #2F6FED;">Быстрая заявка</div>
+                    <h3 class="card-heading">Сборка заявки за 3 шага</h3>
+                    <p style="color: #64748b; margin-top: 8px; margin-bottom: 24px;">Добавляйте позиции, фиксируйте требования и отправляйте в работу снабженцу.</p>
+                    <button class="btn-primary" style="width: 100%; background: rgba(255,255,255,0.1);">Перейти в конструктор</button>
+                </div>
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Мои заявки</div>
+                            <h3 class="card-heading">Последние статусы</h3>
+                        </div>
+                        <a href="#" style="font-size: 14px; font-weight: 600; color: #2F6FED; text-decoration: none;">Смотреть все</a>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <div style="background: #f8fafc; padding: 12px 16px; border-radius: 16px; margin-bottom: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Заявка #453 — бетонные смеси</div>
+                            <div style="font-size: 12px; color: #94a3b8;">В обработке</div>
+                        </div>
+                        <div style="background: #f8fafc; padding: 12px 16px; border-radius: 16px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">Заявка #452 — отделочные материалы</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Отправлена поставщикам</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Сборка заявки</div>
+                    <h2 class="card-heading">Способы создания заявки</h2>
+                </div>
+            </div>
+            <div class="methods-grid">
+                <div class="method-card">
+                    <div class="method-icon">📤</div>
+                    <h3 class="method-title">Загрузить номенклатуру</h3>
+                    <p class="method-desc">Прикрепите XLSX с товарами и количеством. Мы распознаем позиции и сформируем корзину.</p>
+                    <button class="btn-primary">Выбрать файл</button>
+                    <div style="margin-top: 8px;"><a href="#" style="font-size: 14px; color: #64748b; text-decoration: underline;">Скачать шаблон</a></div>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon">📝</div>
+                    <h3 class="method-title">Создать заявку вручную</h3>
+                    <p class="method-desc">Введите номенклатуру строкой или блоком текста.</p>
+                    <button class="btn-primary">Ввести текст</button>
+                </div>
+                <div class="method-card">
+                    <div class="method-icon">📷</div>
+                    <h3 class="method-title">Сфотографировать текст</h3>
+                    <p class="method-desc">Загрузите фото накладной или прайса. Включен OCR.</p>
+                    <button class="btn-primary">Сфотографировать</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            © 2025 Zakup.one — снабжение без хаоса.
+        </footer>
+    </div>
+</body>
+</html>
+
