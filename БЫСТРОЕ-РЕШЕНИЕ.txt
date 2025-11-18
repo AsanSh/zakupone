@@ -1,0 +1,45 @@
+# БЫСТРОЕ РЕШЕНИЕ - выполните эти команды на сервере:
+
+# 1. Перейдите в домашнюю директорию
+cd ~
+
+# 2. Создайте директорию если её нет
+mkdir -p www/zakup.one
+cd www/zakup.one
+
+# 3. Создайте index.html (скопируйте весь блок)
+cat > index.html << 'END'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ZAKUP.ONE</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background: #f1f5f9; padding: 40px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 40px; border-radius: 24px; }
+        h1 { color: #2F6FED; font-size: 32px; margin-bottom: 16px; }
+        p { color: #64748b; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ZAKUP.ONE</h1>
+        <p>Платформа снабжения строительных компаний</p>
+        <p>Сайт успешно загружен и работает!</p>
+    </div>
+</body>
+</html>
+END
+
+# 4. Создайте .htaccess
+echo "DirectoryIndex index.html" > .htaccess
+
+# 5. Установите права
+chmod 644 index.html .htaccess
+
+# 6. Проверьте
+ls -la
+pwd
+
+# 7. Перезагрузите Apache через панель HandyHost
+
